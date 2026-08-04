@@ -8,7 +8,7 @@
 //! node label instead of the positional index.  This produces stable diffs for
 //! configuration arrays whose items are commonly reordered or inserted.
 
-use intentdiff_plugin_sdk::{
+use intentumdiff_plugin_sdk::{
     cst::CstNode,
     hash::structural_hash_with_memo,
     tree::{SemanticNode, SemanticNodeBuilder},
@@ -19,15 +19,15 @@ wit_bindgen::generate!({
     world: "parser-plugin",
 });
 
-use crate::exports::intentdiff::plugin::parser::ExamplePair;
-use crate::exports::intentdiff::plugin::parser::Guest;
-use crate::exports::intentdiff::plugin::parser::LanguageInfoRecord;
-use crate::exports::intentdiff::plugin::parser::ParserMode;
+use crate::exports::intentumdiff::plugin::parser::ExamplePair;
+use crate::exports::intentumdiff::plugin::parser::Guest;
+use crate::exports::intentumdiff::plugin::parser::LanguageInfoRecord;
+use crate::exports::intentumdiff::plugin::parser::ParserMode;
 
 const PLUGIN_METADATA: &str = include_str!("../plugin_metadata.info");
 
 fn language_info_for(ids: Vec<String>) -> Vec<LanguageInfoRecord> {
-    let metadata = intentdiff_plugin_sdk::metadata::parse_plugin_metadata(PLUGIN_METADATA);
+    let metadata = intentumdiff_plugin_sdk::metadata::parse_plugin_metadata(PLUGIN_METADATA);
     ids.into_iter()
         .map(|language_id| {
             let info = metadata.language_or_default(&language_id);
@@ -288,8 +288,8 @@ export!(JsonParser);
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::exports::intentdiff::plugin::parser::Guest;
-    use intentdiff_plugin_sdk::testing as t;
+    use crate::exports::intentumdiff::plugin::parser::Guest;
+    use intentumdiff_plugin_sdk::testing as t;
 
     #[test]
     fn grammar_id_nonempty() {
