@@ -348,6 +348,38 @@ mod tests {
         t::assert_valid_json(&out, "process(empty)");
     }
 
+    fn number_labels(source: &str) -> (Vec<String>, bool) {
+        fn walk(node: &serde_json::Value, labels: &mut Vec<String>, error: &mut bool) {
+            match node["node_type"].as_str() {
+                Some("number") => labels.push(node["label"].as_str().unwrap_or("").to_string()),
+                Some("ERROR") => *error = true,
+                _ => {}
+            }
+            for child in node["children"].as_array().into_iter().flatten() {
+                walk(child, labels, error);
+            }
+        }
+        let tree: serde_json::Value = serde_json::from_str(&process_impl(source)).unwrap();
+        let (mut labels, mut error) = (Vec::new(), false);
+        walk(&tree, &mut labels, &mut error);
+        (labels, error)
+    }
+
+    #[test]
+    fn exponents_with_an_explicit_plus_sign_are_whole_numbers() {
+        // json-parser#6: RFC 8259 exponents take an optional `+` or `-`. The grammar took only
+        // `-`, so `1e+22` split into ERROR + `22` and `1e+22` -> `2e+22` read as unchanged.
+        for (source, label) in [("[1e+22]", "1e+22"), ("[2E+2]", "2E+2"), ("[-1.5e+3]", "-1.5e+3"),
+                                ("[1e22]", "1e22"), ("[1e-2]", "1e-2")] {
+            assert_eq!(number_labels(source), (vec![label.to_string()], false), "{source}");
+        }
+        let old: serde_json::Value = serde_json::from_str(&process_impl("[1e+22]")).unwrap();
+        let new: serde_json::Value = serde_json::from_str(&process_impl("[2e+22]")).unwrap();
+        assert_ne!(old["structural_hash"], new["structural_hash"]);
+        // Malformed numbers (`1e+`, `1e+-2`) are json-parser#7: this plugin does not yet
+        // surface ERROR nodes at all.
+    }
+
     #[test]
     fn process_impl_whitespace_returns_valid_json() {
         let out = process_impl("   \n  ");

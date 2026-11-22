@@ -67,7 +67,9 @@ module.exports = grammar({
     number: _ => {
       const decimalDigits = /\d+/;
       const signedInteger = seq(optional('-'), decimalDigits);
-      const exponentPart = seq(choice('e', 'E'), signedInteger);
+      // IntentumDiff patch (json-parser#6): RFC 8259 exponents take an optional sign, `+` or
+      // `-` (`1e+22`); upstream accepted only `-`, so `1e+22` split into ERROR + `22`.
+      const exponentPart = seq(choice('e', 'E'), optional(choice('-', '+')), decimalDigits);
 
       const decimalIntegerLiteral = seq(
         optional('-'),
