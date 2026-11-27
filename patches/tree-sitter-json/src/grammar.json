@@ -328,7 +328,7 @@
                         ]
                       },
                       {
-                        "type": "SEQ",
+                        "type": "CHOICE",
                         "members": [
                           {
                             "type": "CHOICE",
@@ -338,15 +338,19 @@
                                 "value": "-"
                               },
                               {
-                                "type": "BLANK"
+                                "type": "STRING",
+                                "value": "+"
                               }
                             ]
                           },
                           {
-                            "type": "PATTERN",
-                            "value": "\\d+"
+                            "type": "BLANK"
                           }
                         ]
+                      },
+                      {
+                        "type": "PATTERN",
+                        "value": "\\d+"
                       }
                     ]
                   },
@@ -427,7 +431,7 @@
                         ]
                       },
                       {
-                        "type": "SEQ",
+                        "type": "CHOICE",
                         "members": [
                           {
                             "type": "CHOICE",
@@ -437,15 +441,19 @@
                                 "value": "-"
                               },
                               {
-                                "type": "BLANK"
+                                "type": "STRING",
+                                "value": "+"
                               }
                             ]
                           },
                           {
-                            "type": "PATTERN",
-                            "value": "\\d+"
+                            "type": "BLANK"
                           }
                         ]
+                      },
+                      {
+                        "type": "PATTERN",
+                        "value": "\\d+"
                       }
                     ]
                   },
